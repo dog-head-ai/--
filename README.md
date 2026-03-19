@@ -78,3 +78,13 @@ params = [W1, b1, W2, b2]
 
 for param in params:
     param.attach_grad()
+    def relu(X):
+    return np.maximum(X, 0)
+    def net(X):
+    X = X.reshape((-1, num_inputs))
+    H = relu(np.dot(X, W1) + b1)
+    return np.dot(H, W2) + b2
+    loss = gluon.loss.SoftmaxCrossEntropyLoss()
+    num_epochs, lr = 10, 0.1
+d2l.train_ch3(net, train_iter, test_iter, loss, num_epochs,
+              lambda batch_size: d2l.sgd(params, lr, batch_size))
