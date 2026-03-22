@@ -116,3 +116,10 @@ for i in range(max_degree):
 # labels的维度:(n_train+n_test,)
 labels = np.dot(poly_features, true_w)
 labels += np.random.normal(scale=0.1, size=labels.shape)
+def evaluate_loss(net, data_iter, loss):  #@save
+    """评估给定数据集上模型的损失"""
+    metric = d2l.Accumulator(2)  # 损失的总和,样本数量
+    for X, y in data_iter:
+        l = loss(net(X), y)
+        metric.add(l.sum(), d2l.size(l))
+    return metric[0] / metric[1]
