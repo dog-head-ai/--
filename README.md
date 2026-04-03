@@ -123,3 +123,16 @@ def evaluate_loss(net, data_iter, loss):  #@save
         l = loss(net(X), y)
         metric.add(l.sum(), d2l.size(l))
     return metric[0] / metric[1]
+%matplotlib inline
+from mxnet import autograd, np, npx
+from d2l import mxnet as d2l
+
+npx.set_np()
+
+x = np.arange(-8.0, 8.0, 0.1)
+x.attach_grad()
+with autograd.record():
+    y = npx.sigmoid(x)
+y.backward()
+
+d2l.plot(x, [y, x.grad], legend=['sigmoid', 'gradient'], figsize=(4.5, 2.5))
