@@ -136,3 +136,9 @@ with autograd.record():
 y.backward()
 
 d2l.plot(x, [y, x.grad], legend=['sigmoid', 'gradient'], figsize=(4.5, 2.5))
+M = np.random.normal(size=(4, 4))
+print('一个矩阵 \n', M)
+for i in range(100):
+    M = np.dot(M, np.random.normal(size=(4, 4)))
+
+print('乘以100个矩阵后\n', M)
