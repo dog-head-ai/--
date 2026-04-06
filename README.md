@@ -148,3 +148,11 @@ for i in range(100):
     M = np.dot(M, np.random.normal(size=(4, 4)))
 
 print('乘以100个矩阵后\n', M)
+# “Dummy_na=True”将“na”（缺失值）视为有效的特征值，并为其创建指示符特征
+all_features = pd.get_dummies(all_features, dummy_na=True)
+all_features.shape
+n_train = train_data.shape[0]
+train_features = np.array(all_features[:n_train].values, dtype=np.float32)
+test_features = np.array(all_features[n_train:].values, dtype=np.float32)
+train_labels = np.array(
+    train_data.SalePrice.values.reshape(-1, 1), dtype=np.float32)
