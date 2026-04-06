@@ -136,6 +136,12 @@ with autograd.record():
 y.backward()
 
 d2l.plot(x, [y, x.grad], legend=['sigmoid', 'gradient'], figsize=(4.5, 2.5))
+# 若无法获得测试数据，则可根据训练数据计算均值和标准差
+numeric_features = all_features.dtypes[all_features.dtypes != 'object'].index
+all_features[numeric_features] = all_features[numeric_features].apply(
+    lambda x: (x - x.mean()) / (x.std()))
+# 在标准化数据之后，所有均值消失，因此我们可以将缺失值设置为0
+all_features[numeric_features] = all_features[numeric_features].fillna(0)
 M = np.random.normal(size=(4, 4))
 print('一个矩阵 \n', M)
 for i in range(100):
