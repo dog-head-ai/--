@@ -167,3 +167,20 @@ train_features = np.array(all_features[:n_train].values, dtype=np.float32)
 test_features = np.array(all_features[n_train:].values, dtype=np.float32)
 train_labels = np.array(
     train_data.SalePrice.values.reshape(-1, 1), dtype=np.float32)
+def train(net, train_features, train_labels, test_features, test_labels,
+          num_epochs, learning_rate, weight_decay, batch_size):
+    train_ls, test_ls = [], []
+    train_iter = d2l.load_array((train_features, train_labels), batch_size)
+    # 这里使用的是Adam优化算法
+    trainer = gluon.Trainer(net.collect_params(), 'adam', {
+        'learning_rate': learning_rate, 'wd': weight_decay})
+    for epoch in range(num_epochs):
+        for X, y in train_iter:
+            with autograd.record():
+                l = loss(net(X), y)
+            l.backward()
+            trainer.step(batch_size)
+        train_ls.append(log_rmse(net, train_features, train_labels))
+        if test_labels is not None:
+            test_ls.append(log_rmse(net, test_features, test_labels))
+    return train_ls, test_ls
