@@ -184,3 +184,19 @@ def train(net, train_features, train_labels, test_features, test_labels,
         if test_labels is not None:
             test_ls.append(log_rmse(net, test_features, test_labels))
     return train_ls, test_ls
+
+def get_k_fold_data(k, i, X, y):
+    assert k > 1
+    fold_size = X.shape[0] // k
+    X_train, y_train = None, None
+    for j in range(k):
+        idx = slice(j * fold_size, (j + 1) * fold_size)
+        X_part, y_part = X[idx, :], y[idx]
+        if j == i:
+            X_valid, y_valid = X_part, y_part
+        elif X_train is None:
+            X_train, y_train = X_part, y_part
+        else:
+            X_train = np.concatenate([X_train, X_part], 0)
+            y_train = np.concatenate([y_train, y_part], 0)
+    return X_train, y_train, X_valid, y_valid
