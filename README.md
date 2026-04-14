@@ -217,3 +217,26 @@ def k_fold(k, X_train, y_train, num_epochs, learning_rate, weight_decay,
         print(f'折{i + 1}，训练log rmse{float(train_ls[-1]):f}, '
               f'验证log rmse{float(valid_ls[-1]):f}')
     return train_l_sum / k, valid_l_sum / k
+from mxnet import np, npx
+from mxnet.gluon import nn
+
+npx.set_np()
+
+class CenteredLayer(nn.Block):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+    def forward(self, X):
+        return X - X.mean()
+        layer = CenteredLayer()
+layer(np.array([1, 2, 3, 4, 5]))
+net = nn.Sequential()
+net.add(nn.Dense(128), CenteredLayer())
+net.initialize()
+Y = net(np.random.uniform(size=(4, 8)))
+Y.mean()
+net = nn.Sequential()
+net.add(MyDense(8, in_units=64),
+        MyDense(1, in_units=8))
+net.initialize()
+net(np.random.uniform(size=(2, 64)))
