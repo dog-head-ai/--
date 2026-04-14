@@ -240,3 +240,22 @@ net.add(MyDense(8, in_units=64),
         MyDense(1, in_units=8))
 net.initialize()
 net(np.random.uniform(size=(2, 64)))
+class MyDense(nn.Block):
+    def __init__(self, units, in_units, **kwargs):
+        super().__init__(**kwargs)
+        self.weight = self.params.get('weight', shape=(in_units, units))
+        self.bias = self.params.get('bias', shape=(units,))
+
+    def forward(self, x):
+        linear = np.dot(x, self.weight.data(ctx=x.ctx)) + self.bias.data(
+            ctx=x.ctx)
+        return npx.relu(linear)
+        dense = MyDense(units=3, in_units=5)
+dense.params
+dense.initialize()
+dense(np.random.uniform(size=(2, 5)))
+net = nn.Sequential()
+net.add(MyDense(8, in_units=64),
+        MyDense(1, in_units=8))
+net.initialize()
+net(np.random.uniform(size=(2, 64)))
