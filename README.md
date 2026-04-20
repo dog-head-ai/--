@@ -312,3 +312,32 @@ def train_ch6(net, train_iter, test_iter, num_epochs, lr, device):
           f'on {str(device)}')
 lr, num_epochs = 0.9, 10
 train_ch6(net, train_iter, test_iter, num_epochs, lr, d2l.try_gpu())
+from mxnet import np, npx
+from mxnet.gluon import nn
+from d2l import mxnet as d2l
+
+npx.set_np()
+
+net = nn.Sequential()
+
+net.add(
+    # 这里使用一个11*11的更大窗口来捕捉对象。
+    # 同时，步幅为4，以减少输出的高度和宽度。
+    # 另外，输出通道的数目远大于LeNet
+    nn.Conv2D(96, kernel_size=11, strides=4, activation='relu'),
+    nn.MaxPool2D(pool_size=3, strides=2),
+    # 减小卷积窗口，使用填充为2来使得输入与输出的高和宽一致，且增大输出通道数
+    nn.Conv2D(256, kernel_size=5, padding=2, activation='relu'),
+    nn.MaxPool2D(pool_size=3, strides=2),
+    # 使用三个连续的卷积层和一个较小的卷积窗口。
+    # 除了最后的卷积层，输出通道的数量进一步增加。
+    # 前两个卷积层后不使用汇聚层来减小输入的高和宽
+    nn.Conv2D(384, kernel_size=3, padding=1, activation='relu'),
+    nn.Conv2D(384, kernel_size=3, padding=1, activation='relu'),
+    nn.Conv2D(256, kernel_size=3, padding=1, activation='relu'),
+    nn.MaxPool2D(pool_size=3, strides=2),
+    # 这里，全连接层的输出数量是LeNet中的好几倍。使用dropout层来减轻过拟合
+    nn.Dense(4096, activation='relu'), nn.Dropout(0.5),
+    nn.Dense(4096, activation='relu'), nn.Dropout(0.5),
+    # 最后是输出层。由于这里使用Fashion-MNIST，所以用类别数为10，而非论文中的1000
+    nn.Dense(10))
