@@ -380,3 +380,9 @@ X = np.random.uniform(size=(1, 1, 224, 224))
 for blk in net:
     X = blk(X)
     print(blk.name, 'output shape:\t', X.shape)
+ratio = 4
+small_conv_arch = [(pair[0], pair[1] // ratio) for pair in conv_arch]
+net = vgg(small_conv_arch)
+lr, num_epochs, batch_size = 0.05, 10, 128
+train_iter, test_iter = d2l.load_data_fashion_mnist(batch_size, resize=224)
+d2l.train_ch6(net, train_iter, test_iter, num_epochs, lr, d2l.try_gpu())
