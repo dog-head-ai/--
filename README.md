@@ -349,3 +349,16 @@ for layer in net:
 train_iter, test_iter = d2l.load_data_fashion_mnist(batch_size, resize=224)
 lr, num_epochs = 0.01, 10
 d2l.train_ch6(net, train_iter, test_iter, num_epochs, lr, d2l.try_gpu())
+from mxnet import np, npx
+from mxnet.gluon import nn
+from d2l import mxnet as d2l
+
+npx.set_np()
+
+def vgg_block(num_convs, num_channels):
+    blk = nn.Sequential()
+    for _ in range(num_convs):
+        blk.add(nn.Conv2D(num_channels, kernel_size=3,
+                          padding=1, activation='relu'))
+    blk.add(nn.MaxPool2D(pool_size=2, strides=2))
+    return blk
