@@ -386,3 +386,16 @@ net = vgg(small_conv_arch)
 lr, num_epochs, batch_size = 0.05, 10, 128
 train_iter, test_iter = d2l.load_data_fashion_mnist(batch_size, resize=224)
 d2l.train_ch6(net, train_iter, test_iter, num_epochs, lr, d2l.try_gpu())
+from mxnet import np, npx
+from mxnet.gluon import nn
+from d2l import mxnet as d2l
+
+npx.set_np()
+
+def nin_block(num_channels, kernel_size, strides, padding):
+    blk = nn.Sequential()
+    blk.add(nn.Conv2D(num_channels, kernel_size, strides, padding,
+                      activation='relu'),
+            nn.Conv2D(num_channels, kernel_size=1, activation='relu'),
+            nn.Conv2D(num_channels, kernel_size=1, activation='relu'))
+    return blk
