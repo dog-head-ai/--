@@ -432,3 +432,13 @@ T = 1000  # 总共产生1000个点
 time = np.arange(1, T + 1, dtype=np.float32)
 x = np.sin(0.01 * time) + np.random.normal(0, 0.2, (T,))
 d2l.plot(time, [x], 'time', 'x', xlim=[1, 1000], figsize=(6, 3))
+tau = 4
+features = np.zeros((T - tau, tau))
+for i in range(tau):
+    features[:, i] = x[i: T - tau + i]
+labels = x[tau:].reshape((-1, 1))
+
+batch_size, n_train = 16, 600
+# 只有前n_train个样本用于训练
+train_iter = d2l.load_array((features[:n_train], labels[:n_train]),
+                            batch_size, is_train=True)
