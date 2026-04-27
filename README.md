@@ -421,3 +421,14 @@ for layer in net:
     lr, num_epochs, batch_size = 0.1, 10, 128
 train_iter, test_iter = d2l.load_data_fashion_mnist(batch_size, resize=224)
 d2l.train_ch6(net, train_iter, test_iter, num_epochs, lr, d2l.try_gpu())
+%matplotlib inline
+from mxnet import autograd, gluon, init, np, npx
+from mxnet.gluon import nn
+from d2l import mxnet as d2l
+
+npx.set_np()
+
+T = 1000  # 总共产生1000个点
+time = np.arange(1, T + 1, dtype=np.float32)
+x = np.sin(0.01 * time) + np.random.normal(0, 0.2, (T,))
+d2l.plot(time, [x], 'time', 'x', xlim=[1, 1000], figsize=(6, 3))
