@@ -442,3 +442,14 @@ batch_size, n_train = 16, 600
 # 只有前n_train个样本用于训练
 train_iter = d2l.load_array((features[:n_train], labels[:n_train]),
                             batch_size, is_train=True)
+multistep_preds = np.zeros(T)
+multistep_preds[: n_train + tau] = x[: n_train + tau]
+for i in range(n_train + tau, T):
+    multistep_preds[i] = net(
+        multistep_preds[i - tau:i].reshape((1, -1)))
+
+d2l.plot([time, time[tau:], time[n_train + tau:]],
+         [x.asnumpy(), onestep_preds.asnumpy(),
+          multistep_preds[n_train + tau:].asnumpy()], 'time',
+         'x', legend=['data', '1-step preds', 'multistep preds'],
+         xlim=[1, 1000], figsize=(6, 3))
