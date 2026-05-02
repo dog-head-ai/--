@@ -480,3 +480,15 @@ d2l.plot([time, time[tau:], time[n_train + tau:]],
           multistep_preds[n_train + tau:].asnumpy()], 'time',
          'x', legend=['data', '1-step preds', 'multistep preds'],
          xlim=[1, 1000], figsize=(6, 3))
+%matplotlib inline
+import math
+from mxnet import autograd, gluon, np, npx
+from d2l import mxnet as d2l
+
+npx.set_np()
+
+batch_size, num_steps = 32, 35
+train_iter, vocab = d2l.load_data_time_machine(batch_size, num_steps)
+npx.one_hot(np.array([0, 2]), len(vocab))
+X = np.arange(10).reshape((2, 5))
+npx.one_hot(X.T, 28).shape
