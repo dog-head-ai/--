@@ -492,3 +492,21 @@ train_iter, vocab = d2l.load_data_time_machine(batch_size, num_steps)
 npx.one_hot(np.array([0, 2]), len(vocab))
 X = np.arange(10).reshape((2, 5))
 npx.one_hot(X.T, 28).shape
+def get_params(vocab_size, num_hiddens, device):
+    num_inputs = num_outputs = vocab_size
+
+    def normal(shape):
+        return np.random.normal(scale=0.01, size=shape, ctx=device)
+
+    # 隐藏层参数
+    W_xh = normal((num_inputs, num_hiddens))
+    W_hh = normal((num_hiddens, num_hiddens))
+    b_h = np.zeros(num_hiddens, ctx=device)
+    # 输出层参数
+    W_hq = normal((num_hiddens, num_outputs))
+    b_q = np.zeros(num_outputs, ctx=device)
+    # 附加梯度
+    params = [W_xh, W_hh, b_h, W_hq, b_q]
+    for param in params:
+        param.attach_grad()
+    return params
